@@ -1,18 +1,3 @@
-variable "remote_state_bucket" {
-    type = "string"
-    default = "terraform-remote-state-asdf"
-}
-
-variable "primary_region" {
-    type = "string"
-    default = "us-east-1"
-}
-
-variable "project" {
-    type = "string"
-    default = "myproject"  # TODO: remove this default
-}
-
 provider "aws" {
     # IAM: terraform-bootstrap (global bootstrap user)
     region = "us-east-1"
@@ -22,7 +7,7 @@ provider "aws" {
 
 # project-specific terraform user
 resource "aws_iam_user" "terraform-admin" {
-    name = "terraform-${var.project}"
+    name = "terraform-${var.project_name}"
     provider = "aws.terraform-bootstrap-project"
 }
 
@@ -50,12 +35,12 @@ EOF
 }
 
 output "admin_config" {
-    # "remote_state_bucket", "${aws_s3_bucket.terraform-remote-state.name}",
-    # "primary_region", "${var.primary_region}",
     value = "${map(
         "iam_user", "${aws_iam_user.terraform-admin.name}",
         "iam_user_access_key_id", "${aws_iam_access_key.terraform-admin.id}",
-        "iam_secret_access_key", "${aws_iam_access_key.terraform-admin.secret}"
+        "iam_secret_access_key", "${aws_iam_access_key.terraform-admin.secret}",
+        "remote_state_bucket", "${var.remote_state_bucket}",
+        "primary_region", "${var.primary_region}"
     )}"
 }
 
@@ -64,16 +49,16 @@ output "remote_state_config_command" {
         "terraform remote config",
         "-backend=s3",
         "-backend-config=\"bucket=${var.remote_state_bucket}\" ",
-        "-backend-config=\"key=${var.project}.tfstate\" ",
-        "-backend-config=\"profile=terraform-${var.project}\" ",
+        "-backend-config=\"key=${var.project_name}.tfstate\" ",
+        "-backend-config=\"profile=terraform-${var.project_name}\" ",
         "-backend-config=\"region=${var.primary_region}\" "
     ))}"
 }
 
 output "aws_credentials_entry" {
     value = "${join("\n", list(
-        "# IAM: terraform-${var.project}",
-        "[terraform-${var.project}]",
+        "# IAM: terraform-${var.project_name}",
+        "[terraform-${var.project_name}]",
         "aws_access_key_id = ${aws_iam_access_key.terraform-admin.id}",
         "aws_secret_access_key = ${aws_iam_access_key.terraform-admin.secret}"
     ))}"

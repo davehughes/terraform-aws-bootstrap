@@ -50,7 +50,10 @@ terraform output -json | jq --raw-output ".aws_credentials_entry.value"
 
 Bootstrapping a project (requires 'terraform-bootstrap' AWS profile configured above):
 --------------------------------------------------------------------------------------
-* Create a directory for the new project and copy the `bootstrap_project/bootstrap_project.tf` there.
+* Create a directory for the new project and copy the `bootstrap_project/bootstrap_project.tf` and
+`bootstrap_project/terraform.tfvars` there.
+* Edit the `terraform.tfvars` file to point to the correct remote state bucket and region and fill in
+a project name (this can be anything, but is useful for identifying resources in the AWS console).
 * Run `terraform plan` to validate that the correct actions are planned, then run `terraform apply`.
 * Fill in awscli profile with credentials from output:
 ```
