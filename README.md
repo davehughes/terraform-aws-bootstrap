@@ -66,3 +66,5 @@ aws_secret_access_key = <secret key>
 terraform remote config -backend=s3 -backend-config="bucket=<remote state bucket>"  -backend-config="key=<project>.tfstate"  -backend-config="profile=terraform-<project>"  -backend-config="region=us-east-1" 
 bash -c $CMD
 ```
+* (Optional, but recommended) Delete the `terraform-bootstrap-project` provider and all references to it.  Now that
+the project is bootstrapped with its own admin user, we don't need the bootstrap user or its credentials anymore.
