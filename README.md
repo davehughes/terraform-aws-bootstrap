@@ -30,11 +30,11 @@ AWS_DEFAULT_REGION=<default_region> AWS_PROFILE=terraform-bootstrap terraform im
 ```
 
 * Run `terraform plan` to validate that the correct actions are planned, then run `terraform apply`.  You will be be prompted for the two variables:
-** `remote_state_bucket` - A unique name for the bucket to store terraform state in. S3 buckets are in one global namespace, so you'll see the following error if you have chosen a bucket name that already exists:
+ * `primary_region` - The primary AWS region to create the remote state bucket in.
+ * `remote_state_bucket` - A unique name for the bucket to store terraform state in. S3 buckets are in one global namespace, so you'll see the following error if you have chosen a bucket name that already exists:
 ```
 * aws_s3_bucket.terraform-remote-state: Error creating S3 bucket: BucketAlreadyExists: The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again. status code: 409, request id: F144F0642E53A6B7
 ```
-** `primary_region` - The primary AWS region to create the remote state bucket in.
 
 * Enable remote state storage for the project.  The command to do this is conveniently included in the terraform output in a variable called 'remote_state_config_command'. If you have [jq](https://stedolan.github.io/jq/) installed, you can do the following:
 ```
