@@ -1,8 +1,10 @@
 TODO:
+-----
 * Write up a basic summary of the design here (global tfstate with many per-project tfstates using remote state)
 * Create an unprivileged user that is only permitted to read the global bootstrap configuration for the purposes of importing state (?)
 
 Bootstrapping the bootstrap:
+----------------------------
 * To use Terraform at all, we need a set of credentials for performing administrative tasks. Create an IAM user named 'terraform-bootstrap' and attach a policy named AdministratorAccess (Permissions tab -> Attach Policy) with the following contents:
 ```
 {
@@ -47,6 +49,7 @@ terraform output -json | jq --raw-output ".aws_credentials_entry.value"
 ```
 
 Bootstrapping a project (requires 'terraform-bootstrap' AWS profile configured above):
+--------------------------------------------------------------------------------------
 * Create a directory for the new project and copy the `bootstrap_project/bootstrap_project.tf` there.
 * Run `terraform plan` to validate that the correct actions are planned, then run `terraform apply`.
 * Fill in awscli profile with credentials from output:
